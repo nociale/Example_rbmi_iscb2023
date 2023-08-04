@@ -1,5 +1,6 @@
 # load packages
 library(rbmi)
+library(dplyr)
 
 
 
