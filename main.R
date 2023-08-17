@@ -11,7 +11,6 @@ vignette("quickstart",package="rbmi")  # Simple example of the rbmi functions
 vignette("advanced",package="rbmi")    # Advanced use of the rbmi functions
 vignette("stat_specs", package="rbmi") # Statistical Specifications
 
-
 ######################## SIMULATE DATA
 set.seed(27082023)
 
@@ -20,7 +19,7 @@ set.seed(27082023)
 
 # Input parameters to simulate_data
 n <- 100 # sample size per arm
-time <- c(0, 4, 8, 12) # visits
+time <- c(0, 4, 8, 12) # visits (0, 4, 8, 12 months)
 
 # Assume 10 point yearly increase in the control arm.
 # Assume treatment effect starts after 4 months with 50% relative reduction
@@ -276,3 +275,61 @@ pool(ana_delta)
 pool_obj_cm
 
 # This can be used to implement a "tipping point analysis"
+
+
+
+
+
+#################### EXTENDED-MAR 
+
+# Use the function `set_vars`
+vars <- set_vars(
+  subjid = "id",
+  visit = "visit",
+  outcome = "chg",
+  group = "group",
+  covariates = c("outcome_bl*visit", "group*visit", "group*ind_ice1"), # Assume fixed shift due to ICE1 as described in part 1 slide 27 
+  strategy = "strategy"
+)
+
+draws_obj <- draws(
+  data = dat,
+  data_ice = NULL, # Impute under "MAR"
+  vars = vars,
+  method = method_cm_jackknife
+)
+
+references <- c(
+  "Control" = "Control",
+  "Intervention" = "Intervention"
+)
+
+impute_obj <- impute(
+  draws = draws_obj,
+  references = references
+)
+
+vars_ancova <- vars
+vars_ancova$covariates <- c("outcome_bl", "group")
+
+an_obj <- analyse(
+  impute_obj,
+  vars = vars_ancova,
+  visits = "3"
+)
+
+pool_obj_cm_extended_MAR <- pool(
+  an_obj
+)
+pool_obj_cm_extended_MAR
+pool_obj_cm
+pool_obj_bayes
+
+# The imputation model is mis-specified, since assuming a fixed shift due to
+# treatment discontinuation is not compatible with the data generating 
+# mechanism (data after treatment discontinuation follow CIR assumption).
+# This causes a little bias.
+# SE estimates are larger than CM CIR imputation because the imputation is not borrowing information
+# from the reference arm. Adding complexity to the imputation model
+# increases the SE estimates w.r.t Bayesian MI with CIR imputation (i.e.
+# approximately SE under basic MAR assumption due to the information anchored property). 
