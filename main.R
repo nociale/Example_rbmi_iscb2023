@@ -7,9 +7,9 @@ library(dplyr)
 
 
 # Please check out the rbmi vignettes
-vignette("quickstart",package="rbmi")  # Simple example of the rbmi functions
-vignette("advanced",package="rbmi")    # Advanced use of the rbmi functions
-vignette("stat_specs", package="rbmi") # Statistical Specifications
+vignette("quickstart", package = "rbmi")  # Simple example of the rbmi functions
+vignette("advanced", package = "rbmi")    # Advanced use of the rbmi functions
+vignette("stat_specs", package = "rbmi") # Statistical Specifications
 
 ######################## SIMULATE DATA
 set.seed(27082023)
