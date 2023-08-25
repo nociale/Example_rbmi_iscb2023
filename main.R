@@ -228,6 +228,7 @@ vars_ancova$covariates <- c("outcome_bl", "group")
 
 an_obj <- analyse(
   impute_obj,
+  fun = ancova,
   vars = vars_ancova,
   visits = "3"
 )
@@ -268,6 +269,7 @@ dat_delta <- delta_template(imputations = impute_obj) %>%
 ana_delta <- analyse(
   impute_obj,
   delta = dat_delta,
+  fun = ancova,
   vars = vars_ancova,
   visits = "3"
 )
@@ -314,6 +316,7 @@ vars_ancova$covariates <- c("outcome_bl", "group")
 
 an_obj <- analyse(
   impute_obj,
+  fun = ancova,
   vars = vars_ancova,
   visits = "3"
 )
